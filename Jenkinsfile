@@ -27,7 +27,7 @@ pipeline {
                                 ),
 
                           string(
-                            defaultValue: 's3nivelle',
+                            defaultValue: 's4user',
                             name: 'User',
                             description: 'Required to enter your name',
                             trim: true
@@ -71,8 +71,8 @@ stage('permission') {
                 sh '''
 cat <<EOF > check.sh
 #! /bin/bash 
-USER=${User}
-cat permission.txt | grep -o $USER
+USER=${USER}
+cat permission.txt | grep -i $USER
 if 
 [[ $? -eq 0 ]]
 then 
@@ -82,7 +82,8 @@ echo "You DON'T have permission to run this job"
 exit 1
 fi 
 EOF
-bash -x check.sh
+
+ bash check.sh
                 '''
             }
         }
@@ -94,11 +95,25 @@ bash -x check.sh
                 echo 'clean the environment'
             }
         }
-          stage('sonarqube') {
-            steps {
-                echo 'test the code using sonarqube'
+
+          stage('SonarQube analysis') {
+            agent {
+                docker {
+                  image 'sonarsource/sonar-scanner-cli:4.7.0'
+                }
+               }
+               environment {
+        CI = 'true'
+        //  scannerHome = tool 'Sonar'
+        scannerHome='/opt/sonar-scanner'
+    }
+            steps{
+                withSonarQubeEnv('Sonar') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
             }
         }
+
 
           stage('build-dev') {
             steps {
