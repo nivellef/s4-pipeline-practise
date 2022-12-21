@@ -115,19 +115,72 @@ EOF
         }
 
 
-          stage('build-dev') {
+        stage('build-dev') {
+         when{ 
+          expression {
+            env.Environment == 'DEV' }
+            }
             steps {
-                echo 'build image for dev environment only '
+                sh '''
+cd UI
+docker build -t devopseasylearning2021/s4-ui:${BUILD_NUMBER}$UITag .
+cd -
+cd DB
+docker build -t devopseasylearning2021/s4-db:${BUILD_NUMBER}$DBTag .
+cd -
+cd auth 
+docker build -t devopseasylearning2021/s4-auth:${BUILD_NUMBER}$AUTHTag .
+cd -
+cd weather 
+docker build -t devopseasylearning2021/s4-weather:${BUILD_NUMBER}$WEATHERTag .
+cd -
+                '''
             }
         }
-          stage('build-sandox') {
+
+        stage('build-sanbox') {
+          when{ 
+              expression {
+                env.Environment == 'SANBOX' }
+                }
             steps {
-                echo 'build image for sanbox environment only'
+                sh '''
+cd UI
+docker build -t devopseasylearning2021/s4-ui:${BUILD_NUMBER}$UITag .
+cd -
+cd DB
+docker build -t devopseasylearning2021/s4-db:${BUILD_NUMBER}$DBTag .
+cd -
+cd auth 
+docker build -t devopseasylearning2021/s4-auth:${BUILD_NUMBER}$AUTHTag .
+cd -
+cd weather 
+docker build -t devopseasylearning2021/s4-weather:${BUILD_NUMBER}$WEATHERTag .
+cd -
+                '''
             }
         }
-          stage('build-prod') {
+        
+        stage('build-prod') {
+          when{ 
+              expression {
+                env.Environment == 'PROD' }
+                }
             steps {
-                echo 'build image for prod environment only'
+                sh '''
+cd UI
+docker build -t devopseasylearning2021/s4-ui:${BUILD_NUMBER}$UITag .
+cd -
+cd DB
+docker build -t devopseasylearning2021/s4-db:${BUILD_NUMBER}$DBTag .
+cd -
+cd auth 
+docker build -t devopseasylearning2021/s4-auth:${BUILD_NUMBER}$AUTHTag .
+cd -
+cd weather 
+docker build -t devopseasylearning2021/s4-weather:${BUILD_NUMBER}$WEATHERTag .
+cd -
+                '''
             }
         }
           stage('login') {
