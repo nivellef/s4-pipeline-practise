@@ -71,8 +71,8 @@ stage('permission') {
                 sh '''
 cat <<EOF > check.sh
 #! /bin/bash 
-USER=${User}
-cat permission.txt | grep -i $USER
+USER=${USER}
+cat permission.txt | grep -o $USER
 if 
 [[ $? -eq 0 ]]
 then 
