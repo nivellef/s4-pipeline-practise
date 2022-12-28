@@ -123,16 +123,16 @@ EOF
             steps {
                 sh '''
 cd UI
-docker build -t devopseasylearning2021/s4-ui:${BUILD_NUMBER}$UITag .
+docker build -t nivellef/s4-ui:${BUILD_NUMBER}$UITag .
 cd -
 cd DB
-docker build -t devopseasylearning2021/s4-db:${BUILD_NUMBER}$DBTag .
+docker build -t nivellef/s4-db:${BUILD_NUMBER}$DBTag .
 cd -
 cd auth 
-docker build -t devopseasylearning2021/s4-auth:${BUILD_NUMBER}$AUTHTag .
+docker build -t nivellef/s4-auth:${BUILD_NUMBER}$AUTHTag .
 cd -
 cd weather 
-docker build -t devopseasylearning2021/s4-weather:${BUILD_NUMBER}$WEATHERTag .
+docker build -t nivellef/s4-weather:${BUILD_NUMBER}$WEATHERTag .
 cd -
                 '''
             }
@@ -146,16 +146,16 @@ cd -
             steps {
                 sh '''
 cd UI
-docker build -t devopseasylearning2021/s4-ui:${BUILD_NUMBER}$UITag .
+docker build -t nivellef/s4-ui:${BUILD_NUMBER}$UITag .
 cd -
 cd DB
-docker build -t devopseasylearning2021/s4-db:${BUILD_NUMBER}$DBTag .
+docker build -t nivellef/s4-db:${BUILD_NUMBER}$DBTag .
 cd -
 cd auth 
-docker build -t devopseasylearning2021/s4-auth:${BUILD_NUMBER}$AUTHTag .
+docker build -t nivellef/s4-auth:${BUILD_NUMBER}$AUTHTag .
 cd -
 cd weather 
-docker build -t devopseasylearning2021/s4-weather:${BUILD_NUMBER}$WEATHERTag .
+docker build -t nivellef/s4-weather:${BUILD_NUMBER}$WEATHERTag .
 cd -
                 '''
             }
@@ -169,55 +169,221 @@ cd -
             steps {
                 sh '''
 cd UI
-docker build -t devopseasylearning2021/s4-ui:${BUILD_NUMBER}$UITag .
+docker build -t nivellef/s4-ui:${BUILD_NUMBER}$UITag .
 cd -
 cd DB
-docker build -t devopseasylearning2021/s4-db:${BUILD_NUMBER}$DBTag .
+docker build -t nivellef/s4-db:${BUILD_NUMBER}$DBTag .
 cd -
 cd auth 
-docker build -t devopseasylearning2021/s4-auth:${BUILD_NUMBER}$AUTHTag .
+docker build -t nivellef/s4-auth:${BUILD_NUMBER}$AUTHTag .
 cd -
 cd weather 
-docker build -t devopseasylearning2021/s4-weather:${BUILD_NUMBER}$WEATHERTag .
+docker build -t nivellef/s4-weather:${BUILD_NUMBER}$WEATHERTag .
 cd -
                 '''
             }
-        }
-          stage('login') {
+        } 
+
+        stage('login') {
             steps {
-                echo 'login to company dockerhub account'
+                sh '''
+echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u nivellef --password-Github2022@@
+                '''
             }
         }
-          stage('push-to-dockerhub-dev') {
+
+        stage('push-to-dockerhub-dev') {
+          when{ 
+              expression {
+                env.Environment == 'DEV' }
+                }
             steps {
-                echo 'push image for dev environment only'
+                sh '''
+docker push nivellef/s4-ui:${BUILD_NUMBER}$UITag 
+docker push nivellef/s4-db:${BUILD_NUMBER}$DBTag 
+docker push nivellef/s4-auth:${BUILD_NUMBER}$AUTHTag 
+docker push nivellef/s4-weather:${BUILD_NUMBER}$WEATHERTag 
+                '''
             }
         }
-          stage('push-to-dockerhub-sanbox') {
+
+        stage('push-to-dockerhub-sanbox') {
+          when{ 
+              expression {
+                env.Environment == 'SANBOX' }
+                }
             steps {
-                echo 'push image sandbox  dev environment only '
+                sh '''
+docker push nivellef/s4-ui:${BUILD_NUMBER}$UITag 
+docker push nivellef/s4-db:${BUILD_NUMBER}$DBTag 
+docker push nivellef/s4-auth:${BUILD_NUMBER}$AUTHTag 
+docker push nivellef/s4-weather:${BUILD_NUMBER}$WEATHERTag 
+                '''
             }
         }
-          stage('push-to-dockerhub-prod') {
+
+        stage('push-to-dockerhub-prod') {
+          when{ 
+              expression {
+                env.Environment == 'PROD' }
+                }
             steps {
-                echo 'push image for prod  environment only '
+                sh '''
+docker push nivellef/s4-ui:${BUILD_NUMBER}$UITag 
+docker push nivellef/s4-db:${BUILD_NUMBER}$DBTag 
+docker push nivellef/s4-auth:${BUILD_NUMBER}$AUTHTag 
+docker push nivellef/s4-weather:${BUILD_NUMBER}$WEATHERTag 
+                '''
             }
         }
-          stage('update helm charts-sanbox') {
+
+        stage('push-to-dockerhub-sanbox') {
+          when{ 
+              expression {
+                env.Environment == 'SANBOX' }
+                }
             steps {
-                echo 'update values file  for prod  environment only'
+                sh '''
+docker push nivellef/s4-ui:${BUILD_NUMBER}$UITag 
+docker push nivellef/s4-db:${BUILD_NUMBER}$DBTag 
+docker push nivellef/s4-auth:${BUILD_NUMBER}$AUTHTag 
+docker push nivellef/s4-weather:${BUILD_NUMBER}$WEATHERTag 
+                '''
             }
         }
-          stage('update helm charts-dev') {
-            steps {
-                echo 'update values file  for dev  environment only'
+        
+    stage('update helm charts-dev') {
+         when{ 
+          expression {
+            env.Environment == 'DEV' }
             }
-        }
-          stage('update helm charts-prod') {
-            steps {
-                echo 'update values file  for test  environment only'
+	      steps {
+	        script {
+	          withCredentials([
+	            string(credentialsId: 's3nivelle-image', variable: 'IMAGE')
+	          ]) {
+
+	            sh '''
+                 git config --global user.name "nivellef"
+                 git config --global user.email nivellef84@gmail.com
+                rm -rf s4-pipeline-practise || true
+                git clone  https://nivellef:$IMAGE@github.com/nivellef/s4-pipeline-practise.git
+                cd s4-pipeline-practise/CHARTS
+cat <<EOF > dev-values.yaml           
+        image:
+          db:
+             repository: nivellef/s4-db
+             tag: "$DBTag"
+          ui:
+             repository: nivellef/s4-ui
+             tag: "$UITag"
+          auth:
+             repository: nivellef/s4-auth
+             tag: "$AUTHTag"
+          weather:
+             repository: nivellef/s4-weather
+             tag: "$WEATHERTag"
+EOF
+                git add -A 
+                git commit -m "testing jenkins"
+                git push https://nivellef:$IMAGE@github.com/nivellef/s4-pipeline-practise.git || true
+	            '''
+	          }
+
+	        }
+
+	      }
+
+	    }  
+           
+    stage('update helm charts-sanbox') {
+         when{ 
+          expression {
+            env.Environment == 'SANBOX' }
             }
-        }
+	      steps {
+	        script {
+	          withCredentials([
+	            string(credentialsId: 's3nivelle-image', variable: 'IMAGE')
+	          ]) {
+
+	            sh '''
+                 git config --global user.name "nivellef"
+                 git config --global user.email nivellef84@gmail.com
+                rm -rf s4-pipeline-practise || true
+                git clone  https://nivellef:$IMAGE@github.com/nivellef/s4-pipeline-practise.git
+                cd s4-pipeline-practise/CHARTS
+cat <<EOF > sanbox-values.yaml           
+        image:
+          db:
+             repository: nivellef/s4-db
+             tag: "$DBTag"
+          ui:
+             repository: nivellef/s4-ui
+             tag: "$UITag"
+          auth:
+             repository: nivellef/s4-auth
+             tag: "$AUTHTag"
+          weather:
+             repository: nivellef/s4-weather
+             tag: "$WEATHERTag"
+EOF
+                git add -A 
+                git commit -m "testing jenkins"
+                git push https://nivellef:$IMAGE@github.com/nivellef/s4-pipeline-practise.git  || true
+	            '''
+	          }
+
+	        }
+
+	      }
+
+	    }  
+
+  stage('update helm charts-prod') {
+         when{ 
+          expression {
+            env.Environment == 'PROD' }
+            }
+	      steps {
+	        script {
+	          withCredentials([
+	            string(credentialsId: 's3nivelle-image', variable: 'IMAGE')
+	          ]) {
+
+	            sh '''
+                 git config --global user.name "nivellef"
+                 git config --global user.email nivellef84@gmail.com
+                rm -rf s4-pipeline-practise || true
+                git clone  https://nivellef:$IMAGE@github.com/nivellef/s4-pipeline-practise.git
+                cd s4-pipeline-practise/CHARTS
+cat <<EOF > prod-values.yaml           
+        image:
+          db:
+             repository: nivellef/s4-db
+             tag: "$DBTag"
+          ui:
+             repository: nivellef/s4-ui
+             tag: "$UITag"
+          auth:
+             repository: nivellef/s4-auth
+             tag: "$AUTHTag"
+          weather:
+             repository: nivellef/s4-weather
+             tag: "$WEATHERTag"
+EOF
+                git add -A 
+                git commit -m "testing jenkins"
+                git push https://nivellef:$IMAGE@github.com/nivellef/s4-pipeline-practise.git  || true
+	            '''
+	          }
+
+	        }
+
+	      }
+
+	    }
+
           stage('wait for argocd') {
             steps {
                 echo 'waiting for argocd to detect the change'
