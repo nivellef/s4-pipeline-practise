@@ -122,16 +122,16 @@ EOF
             steps {
                 sh '''
 cd UI
-docker build -t nivellef/s4-ui:${BUILD_NUMBER}$UITag .
+docker build -t devopseasylearning2021/s4-ui:${BUILD_NUMBER}$UITag .
 cd -
 cd DB
-docker build -t nivellef/s4-db:${BUILD_NUMBER}$DBTag .
+docker build -t devopseasylearning2021/s4-db:${BUILD_NUMBER}$DBTag .
 cd -
 cd auth 
-docker build -t nivellef/s4-auth:${BUILD_NUMBER}$AUTHTag .
+docker build -t devopseasylearning2021/s4-auth:${BUILD_NUMBER}$AUTHTag .
 cd -
 cd weather 
-docker build -t nivellef/s4-weather:${BUILD_NUMBER}$WEATHERTag .
+docker build -t devopseasylearning2021/s4-weather:${BUILD_NUMBER}$WEATHERTag .
 cd -
                 '''
             }
@@ -145,16 +145,16 @@ cd -
             steps {
                 sh '''
 cd UI
-docker build -t nivellef/s4-ui:${BUILD_NUMBER}$UITag .
+docker build -t devopseasylearning2021/s4-ui:${BUILD_NUMBER}$UITag .
 cd -
 cd DB
-docker build -t nivellef/s4-db:${BUILD_NUMBER}$DBTag .
+docker build -t devopseasylearning2021/s4-db:${BUILD_NUMBER}$DBTag .
 cd -
 cd auth 
-docker build -t nivellef/s4-auth:${BUILD_NUMBER}$AUTHTag .
+docker build -t devopseasylearning2021/s4-auth:${BUILD_NUMBER}$AUTHTag .
 cd -
 cd weather 
-docker build -t nivellef/s4-weather:${BUILD_NUMBER}$WEATHERTag .
+docker build -t devopseasylearning2021/s4-weather:${BUILD_NUMBER}$WEATHERTag .
 cd -
                 '''
             }
@@ -168,16 +168,16 @@ cd -
             steps {
                 sh '''
 cd UI
-docker build -t nivellef/s4-ui:${BUILD_NUMBER}$UITag .
+docker build -t devopseasylearning2021/s4-ui:${BUILD_NUMBER}$UITag .
 cd -
 cd DB
-docker build -t nivellef/s4-db:${BUILD_NUMBER}$DBTag .
+docker build -t devopseasylearning2021/s4-db:${BUILD_NUMBER}$DBTag .
 cd -
 cd auth 
-docker build -t nivellef/s4-auth:${BUILD_NUMBER}$AUTHTag .
+docker build -t devopseasylearning2021/s4-auth:${BUILD_NUMBER}$AUTHTag .
 cd -
 cd weather 
-docker build -t nivellef/s4-weather:${BUILD_NUMBER}$WEATHERTag .
+docker build -t devopseasylearning2021/s4-weather:${BUILD_NUMBER}$WEATHERTag .
 cd -
                 '''
             }
@@ -186,7 +186,7 @@ cd -
         stage('login') {
             steps {
                 sh '''
-echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u nivellef --password-Github2022@@
+echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u devopseasylearning2021 --password-stdin
                 '''
             }
         }
@@ -198,10 +198,10 @@ echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u nivellef --password-Github2022
                 }
             steps {
                 sh '''
-docker push nivellef/s4-ui:${BUILD_NUMBER}$UITag 
-docker push nivellef/s4-db:${BUILD_NUMBER}$DBTag 
-docker push nivellef/s4-auth:${BUILD_NUMBER}$AUTHTag 
-docker push nivellef/s4-weather:${BUILD_NUMBER}$WEATHERTag 
+docker push devopseasylearning2021/s4-ui:${BUILD_NUMBER}$UITag 
+docker push devopseasylearning2021/s4-db:${BUILD_NUMBER}$DBTag 
+docker push devopseasylearning2021/s4-auth:${BUILD_NUMBER}$AUTHTag 
+docker push devopseasylearning2021/s4-weather:${BUILD_NUMBER}$WEATHERTag 
                 '''
             }
         }
@@ -213,10 +213,10 @@ docker push nivellef/s4-weather:${BUILD_NUMBER}$WEATHERTag
                 }
             steps {
                 sh '''
-docker push nivellef/s4-ui:${BUILD_NUMBER}$UITag 
-docker push nivellef/s4-db:${BUILD_NUMBER}$DBTag 
-docker push nivellef/s4-auth:${BUILD_NUMBER}$AUTHTag 
-docker push nivellef/s4-weather:${BUILD_NUMBER}$WEATHERTag 
+docker push devopseasylearning2021/s4-ui:${BUILD_NUMBER}$UITag 
+docker push devopseasylearning2021/s4-db:${BUILD_NUMBER}$DBTag 
+docker push devopseasylearning2021/s4-auth:${BUILD_NUMBER}$AUTHTag 
+docker push devopseasylearning2021/s4-weather:${BUILD_NUMBER}$WEATHERTag 
                 '''
             }
         }
@@ -228,10 +228,10 @@ docker push nivellef/s4-weather:${BUILD_NUMBER}$WEATHERTag
                 }
             steps {
                 sh '''
-docker push nivellef/s4-ui:${BUILD_NUMBER}$UITag 
-docker push nivellef/s4-db:${BUILD_NUMBER}$DBTag 
-docker push nivellef/s4-auth:${BUILD_NUMBER}$AUTHTag 
-docker push nivellef/s4-weather:${BUILD_NUMBER}$WEATHERTag 
+docker push devopseasylearning2021/s4-ui:${BUILD_NUMBER}$UITag 
+docker push devopseasylearning2021/s4-db:${BUILD_NUMBER}$DBTag 
+docker push devopseasylearning2021/s4-auth:${BUILD_NUMBER}$AUTHTag 
+docker push devopseasylearning2021/s4-weather:${BUILD_NUMBER}$WEATHERTag 
                 '''
             }
         }
@@ -257,16 +257,16 @@ docker push nivellef/s4-weather:${BUILD_NUMBER}$WEATHERTag
 cat <<EOF > dev-values.yaml           
         image:
           db:
-             repository: nivellef/s4-db
+             repository: devopseasylearning2021/s4-db
              tag: "$DBTag"
           ui:
-             repository: nivellef/s4-ui
+             repository: devopseasylearning2021/s4-ui
              tag: "$UITag"
           auth:
-             repository: nivellef/s4-auth
+             repository: devopseasylearning2021/s4-auth
              tag: "$AUTHTag"
           weather:
-             repository: nivellef/s4-weather
+             repository: devopseasylearning2021/s4-weather
              tag: "$WEATHERTag"
 EOF
                 git add -A 
@@ -301,16 +301,16 @@ EOF
 cat <<EOF > sanbox-values.yaml           
         image:
           db:
-             repository: nivellef/s4-db
+             repository: devopseasylearning2021/s4-db
              tag: "$DBTag"
           ui:
-             repository: nivellef/s4-ui
+             repository: devopseasylearning2021/s4-ui
              tag: "$UITag"
           auth:
-             repository: nivellef/s4-auth
+             repository: devopseasylearning2021/s4-auth
              tag: "$AUTHTag"
           weather:
-             repository: nivellef/s4-weather
+             repository: devopseasylearning2021/s4-weather
              tag: "$WEATHERTag"
 EOF
                 git add -A 
@@ -345,16 +345,16 @@ EOF
 cat <<EOF > prod-values.yaml           
         image:
           db:
-             repository: nivellef/s4-db
+             repository: devopseasylearning2021/s4-db
              tag: "$DBTag"
           ui:
-             repository: nivellef/s4-ui
+             repository: devopseasylearning2021/s4-ui
              tag: "$UITag"
           auth:
-             repository: nivellef/s4-auth
+             repository: devopseasylearning2021/s4-auth
              tag: "$AUTHTag"
           weather:
-             repository: nivellef/s4-weather
+             repository: devopseasylearning2021/s4-weather
              tag: "$WEATHERTag"
 EOF
                 git add -A 
