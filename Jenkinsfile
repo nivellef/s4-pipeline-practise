@@ -114,7 +114,6 @@ EOF
             }
         }
 
-
         stage('build-dev') {
          when{ 
           expression {
@@ -237,20 +236,6 @@ docker push nivellef/s4-weather:${BUILD_NUMBER}$WEATHERTag
             }
         }
 
-        stage('push-to-dockerhub-sanbox') {
-          when{ 
-              expression {
-                env.Environment == 'SANBOX' }
-                }
-            steps {
-                sh '''
-docker push nivellef/s4-ui:${BUILD_NUMBER}$UITag 
-docker push nivellef/s4-db:${BUILD_NUMBER}$DBTag 
-docker push nivellef/s4-auth:${BUILD_NUMBER}$AUTHTag 
-docker push nivellef/s4-weather:${BUILD_NUMBER}$WEATHERTag 
-                '''
-            }
-        }
         
     stage('update helm charts-dev') {
          when{ 
