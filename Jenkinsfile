@@ -186,7 +186,7 @@ cd -
         stage('login') {
             steps {
                 sh '''
-echo $s3nivelle-dockerhub-credentials | docker login -u devopseasylearning2021 --password-stdin
+echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u devopseasylearning2021 --password-stdin
                 '''
             }
         }
