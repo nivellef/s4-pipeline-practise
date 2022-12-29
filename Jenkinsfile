@@ -5,6 +5,11 @@ pipeline {
 
             }
 
+             environment {
+		DOCKERHUB_CREDENTIALS=credentials('dockerhub')
+	}
+ 
+
      options {
     timeout (time: 1, unit: 'HOURS')
     buildDiscarder(logRotator(numToKeepStr: '2'))
