@@ -276,7 +276,7 @@ cat <<EOF > dev-values.yaml
 EOF
                 git add -A 
                 git commit -m "testing jenkins"
-                git push https://nivellef:$IMAGE@github.com/nivellef/s4-pipeline-practise.git || true
+                git push https://nivellef:$IMAGE@github.com/nivellef/s4-pipeline-practise.git 
 	            '''
 	          }
 
@@ -320,7 +320,7 @@ cat <<EOF > sanbox-values.yaml
 EOF
                 git add -A 
                 git commit -m "testing jenkins"
-                git push https://nivellef:$IMAGE@github.com/nivellef/s4-pipeline-practise.git  || true
+                git push https://nivellef:$IMAGE@github.com/nivellef/s4-pipeline-practise.git  
 	            '''
 	          }
 
@@ -364,7 +364,7 @@ cat <<EOF > prod-values.yaml
 EOF
                 git add -A 
                 git commit -m "testing jenkins"
-                git push https://nivellef:$IMAGE@github.com/nivellef/s4-pipeline-practise.git  || true
+                git push https://nivellef:$IMAGE@github.com/nivellef/s4-pipeline-practise.git  
 	            '''
 	          }
 
